@@ -4,6 +4,7 @@ import { db } from "../../../firebase/config";
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../../firebase/config";
+import { saveNotification } from "../../../utils/NotificationsUtils";
 
 const PurchaserForm = () => {
   const [formData, setFormData] = useState({
@@ -62,6 +63,13 @@ const PurchaserForm = () => {
         ...formData,
         userId: user.uid,
         createdAt: new Date(),
+      });
+
+      saveNotification({
+        message: `${formData.fullName} (${formData.form_type}) has Requested for Purchase of Car ${formData.carBrand} ${formData.carModel}`,
+        fromRole: "buyer",
+        toRoles: ["admin"],
+        type: "carforPurchase_requested_form",
       });
 
       console.log("Purchase form submitted with ID:", addingData.id);

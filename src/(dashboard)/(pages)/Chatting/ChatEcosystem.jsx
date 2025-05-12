@@ -98,6 +98,7 @@ export default function ChatEcoystem() {
         <div className="pt-4 border-t">
           <ChatInput
             text={text}
+            chatList={chatList}
             onChange={(e) => setText(e.target.value)}
             onSubmit={handleSend}
           />

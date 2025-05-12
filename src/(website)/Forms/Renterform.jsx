@@ -3,6 +3,7 @@ import { addDoc, collection, doc } from "firebase/firestore";
 import { db, auth } from "../../../firebase/config";
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { saveNotification } from "../../../utils/NotificationsUtils";
 
 const RenterForm = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,8 @@ const RenterForm = () => {
     carPrice: "",
     status: "Pending",
     form_type: "Renter",
+    address: "",
+    paymentMethod: "Credit Card",
   });
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
@@ -57,6 +60,13 @@ const RenterForm = () => {
         ...formData,
         userId: user.uid,
         createdAt: new Date(),
+      });
+
+      saveNotification({
+        message: `${formData.fullName} (${formData.form_type}) has Requested for Purchase of Car ${formData.carBrand} ${formData.carModel}`,
+        fromRole: "renter",
+        toRoles: ["admin"],
+        type: "carforRent_requested_form",
       });
 
       console.log("Rent form submitted with ID:", addingData.id);
@@ -128,6 +138,16 @@ const RenterForm = () => {
           required
         />
 
+        <textarea
+          name="address"
+          placeholder="Shipping Address"
+          value={formData.address}
+          onChange={handleChange}
+          rows="3"
+          className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+
         <input
           type="number"
           name="rentalDays"
@@ -138,6 +158,22 @@ const RenterForm = () => {
           min="1"
           required
         />
+
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Payment Method
+          </label>
+          <select
+            name="paymentMethod"
+            value={formData.paymentMethod}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option>Credit Card</option>
+            <option>Bank Transfer</option>
+            <option>Cash on Delivery</option>
+          </select>
+        </div>
 
         <div className="flex items-start">
           <input

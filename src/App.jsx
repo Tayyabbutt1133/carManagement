@@ -22,11 +22,28 @@ import RentersHistory from "./(dashboard)/(pages)/Renter/RentersHistory/Page";
 import MyProfile from "./(dashboard)/(pages)/MyProfile";
 import PurchasersHistory from "./(dashboard)/(pages)/Purchaser/PurchasersHistory/Page";
 import PendingPurchasers from "./(dashboard)/(pages)/Purchaser/PendingPurchasers/Page";
+import Notifications from "./(dashboard)/(pages)/Notifications";
+import { useEffect } from "react";
+import { generateToken, messaging } from "../firebase/config";
+import { onMessage } from "firebase/messaging";
 
 // Protected Dashboard Layout Component
 const ProtectedDashboardLayout = ListingProtectHOC(Dashboard);
 
 function App() {
+  useEffect(() => {
+    generateToken();
+
+    onMessage(messaging, (payload) => {
+      console.log(payload);
+    })
+
+  }, []);
+
+  
+
+
+
   const location = useLocation();
   const hideLayout = location.pathname.startsWith("/dashboard");
 
@@ -65,8 +82,9 @@ function App() {
           <Route path="pendingrenters" element={<PendingRenters />} />
           <Route path="rentalshistory" element={<RentersHistory />} />
           <Route path="pendingoffers" element={<PendingPurchasers />} />
-          <Route path="purchaseshistory" element={<PurchasersHistory/>} />
-          <Route/>
+          <Route path="purchaseshistory" element={<PurchasersHistory />} />
+          <Route path="notify" element={<Notifications/>} />
+          <Route />
         </Route>
       </Routes>
 

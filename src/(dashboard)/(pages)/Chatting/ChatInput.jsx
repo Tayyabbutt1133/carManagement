@@ -1,4 +1,20 @@
-export default function ChatInput({ text, onChange, onSubmit }) {
+import { saveNotification } from "../../../../utils/NotificationsUtils";
+
+export default function ChatInput({ chatList, text, onChange, onSubmit }) {
+
+
+  // const NewMessage = async () => {
+    
+  //   const userType = localStorage.getItem("user_type");
+
+  //   await saveNotification({
+  //     message: "You get a New Message",
+  //     fromRole: userType,
+  //   })
+
+  // }
+
+
   return (
     <form onSubmit={onSubmit} className="flex items-center space-x-4">
       <input

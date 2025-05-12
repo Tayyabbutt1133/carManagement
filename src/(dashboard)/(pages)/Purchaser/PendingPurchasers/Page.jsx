@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "../../../../../firebase/config";
-import { useState, useEffect } from "react";
+import { Clock, DollarSign, CalendarCheck, CarFront } from "lucide-react";
 
 const PendingPurchasers = () => {
   const [user] = useAuthState(auth);
@@ -10,7 +10,7 @@ const PendingPurchasers = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      if (!user) return;
+    if (!user) return;
 
     const fetchPendingPurchaser = async () => {
       try {
@@ -26,7 +26,6 @@ const PendingPurchasers = () => {
           id: doc.id,
           ...doc.data(),
         }));
-          console.log("Data from Pending Purchasers :", data);
         setHistory(data);
       } catch (error) {
         console.error("Error fetching renter history:", error);
@@ -38,35 +37,54 @@ const PendingPurchasers = () => {
     fetchPendingPurchaser();
   }, [user]);
 
-  if (loading) return <div>Loading renter history...</div>;
+  if (loading)
+    return (
+      <div className="text-center text-gray-500">
+        Loading pending purchases...
+      </div>
+    );
 
   return (
-    <div className="mt-10">
-      <h2 className="text-2xl font-bold mb-4">Your Accepted Rentals</h2>
+    <div className="mt-10 px-4 sm:px-6 lg:px-8">
+      <h2 className="text-3xl font-semibold mb-6 text-gray-800 border-b pb-2">
+        My Pending Purchases
+      </h2>
+
       {history.length === 0 ? (
-        <p>No accepted rentals found.</p>
+        <p className="text-gray-500 text-lg text-center">
+          You have no pending purchase requests.
+        </p>
       ) : (
-        <ul className="space-y-4">
+        <ul className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
           {history.map((entry) => (
             <li
               key={entry.id}
-              className="border p-4 rounded shadow bg-white text-gray-800"
+              className="bg-white rounded-2xl shadow-sm border hover:shadow-lg transition-all duration-200 p-6 space-y-4"
             >
-              <p>
-                <strong>Car:</strong> {entry.carBrand} {entry.carModel} (
-                {entry.carYear})
-              </p>
-              <p>
-                <strong>Price:</strong> ${entry.carPrice}
-              </p>
-              <p>
-                <strong>Status:</strong>{" "}
-                <span className="text-green-600">{entry.status}</span>
-              </p>
-              <p>
-                <strong>Date:</strong>{" "}
-                {entry.createdAt?.toDate().toLocaleDateString()}
-              </p>
+              <div className="flex items-center gap-2 text-lg font-semibold text-gray-700">
+                <CarFront className="w-5 h-5 text-blue-500" />
+                {entry.carBrand} {entry.carModel} ({entry.carYear})
+              </div>
+
+              <div className="flex items-center gap-2 text-gray-600">
+                <DollarSign className="w-4 h-4 text-green-500" />
+                <span className="font-medium">${entry.carPrice}</span>
+              </div>
+
+              <div className="flex items-center gap-2 text-gray-600">
+                <Clock className="w-4 h-4 text-yellow-500" />
+                <span className="text-sm font-medium">Status:</span>
+                <span className="text-yellow-600 font-semibold">
+                  {entry.status}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 text-gray-600">
+                <CalendarCheck className="w-4 h-4 text-purple-500" />
+                <span className="text-sm font-medium">
+                  {entry.createdAt?.toDate().toLocaleDateString()}
+                </span>
+              </div>
             </li>
           ))}
         </ul>

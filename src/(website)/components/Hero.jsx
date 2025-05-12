@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaCar } from "react-icons/fa";
 
 const Hero = () => {
+  const [accessToken, setAccessToken] = useState();
+
+  useEffect(() => {
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
+      setAccessToken(access_token);
+    }
+  }, [accessToken]);
+
   return (
     <section className="bg-gray-100 h-screen flex items-center justify-center">
       <div className="text-center px-6">
@@ -26,12 +35,16 @@ const Hero = () => {
               Browse Cars
             </Link>
 
-            <Link
-              to="/signup"
-              className="border border-blue-600 text-blue-600 px-6 py-2 rounded-md hover:bg-blue-50 transition"
-            >
-              Get Started
-            </Link>
+            {accessToken ? (
+              ""
+            ) : (
+              <Link
+                to="/signup"
+                className="border border-blue-600 text-blue-600 px-6 py-2 rounded-md hover:bg-blue-50 transition"
+              >
+                Get Started
+              </Link>
+            )}
           </div>
         </div>
       </div>

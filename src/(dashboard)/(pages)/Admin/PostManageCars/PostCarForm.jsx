@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { db } from "../../../../../firebase/config";
 import { collection, addDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { saveNotification } from "../../../../../utils/NotificationsUtils";
 
 const PostCarForm = () => {
   const [formData, setFormData] = useState({
@@ -32,6 +33,17 @@ const PostCarForm = () => {
         mileage: Number(formData.mileage),
         createdAt: new Date(),
       });
+
+      const userRole = localStorage.getItem("user_type");
+      // Saving notifications reusable helper functions
+      await saveNotification({
+        message: `A new car listing has been added by ${userRole}.`,
+        fromRole: userRole,
+        toRoles: ["renter", "buyer"],
+        type: "car_posted",
+      });
+
+      // setting form fields to null after success
       setFormData({
         model: "",
         brand: "",

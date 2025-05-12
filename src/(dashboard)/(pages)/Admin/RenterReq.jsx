@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../../../firebase/config";
 import { collection, getDocs, updateDoc } from "firebase/firestore";
+import { saveNotification } from "../../../../utils/NotificationsUtils";
 
 const RenterReq = () => {
   const [renterRequests, setRenterRequests] = useState([]);
@@ -31,12 +32,20 @@ const RenterReq = () => {
     fetchRenterRequests();
   }, []);
 
-  const handleStatusChange = async (formRef, newStatus) => {
+  const handleStatusChange = async (renter, newStatus) => {
     try {
-      await updateDoc(formRef, { status: newStatus });
+      await updateDoc(renter.ref, { status: newStatus });
+      // Manual push notification helper function
+      await saveNotification({
+        message: `Your Request has been ${newStatus} by Admin for ${renter.carBrand} ${renter.carModel}`,
+        fromRole: "admin",
+        toRoles: ["renter"],
+        type: "rent_request_status",
+      });
+
       setRenterRequests((prev) =>
         prev.map((req) =>
-          req.ref.path === formRef.path ? { ...req, status: newStatus } : req
+          req.ref.path === renter.ref.path ? { ...req, status: newStatus } : req
         )
       );
     } catch (error) {
@@ -49,7 +58,7 @@ const RenterReq = () => {
 
   return (
     <div className="overflow-x-auto rounded-xl shadow p-4">
-      <h2 className="text-2xl font-semibold mb-6">Buyer Requests</h2>
+      <h2 className="text-2xl font-semibold mb-6">Renter Requests</h2>
       <table className="min-w-full bg-white text-sm text-left text-gray-700">
         <thead className="bg-gray-100 text-xs uppercase text-gray-500">
           <tr>
@@ -79,7 +88,7 @@ const RenterReq = () => {
                 <select
                   value={renter.status || "Pending"}
                   onChange={(e) =>
-                    handleStatusChange(renter.ref, e.target.value)
+                    handleStatusChange(renter, e.target.value)
                   }
                   className="border border-gray-300 rounded px-2 py-1"
                 >

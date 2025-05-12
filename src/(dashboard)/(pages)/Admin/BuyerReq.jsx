@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../../../firebase/config";
 import { collection, getDocs, updateDoc } from "firebase/firestore";
+import { saveNotification } from "../../../../utils/NotificationsUtils";
 
 const BuyerReq = () => {
   const [buyerRequests, setBuyerRequests] = useState([]);
@@ -31,12 +32,20 @@ const BuyerReq = () => {
 
     fetchBuyerRequests();
   }, []);
-  const handleStatusChange = async (formRef, newStatus) => {
+  const handleStatusChange = async (buyer, newStatus) => {
     try {
-      await updateDoc(formRef, { status: newStatus });
+      await updateDoc(buyer.ref, { status: newStatus });
+      // Manual push notification helper function
+      await saveNotification({
+        message: `Your Request has been ${newStatus} by Admin for ${buyer.carBrand} ${buyer.carModel}`,
+        fromRole: "admin",
+        toRoles: ["buyer"],
+        type: "purchase_request_status",
+      });
+
       setBuyerRequests((prev) =>
         prev.map((req) =>
-          req.ref.path === formRef.path ? { ...req, status: newStatus } : req
+          req.ref.path === buyer.ref.path ? { ...req, status: newStatus } : req
         )
       );
     } catch (error) {
@@ -83,7 +92,7 @@ const BuyerReq = () => {
                 <select
                   value={buyer.status || "Pending"}
                   onChange={(e) =>
-                    handleStatusChange(buyer.ref, e.target.value)
+                    handleStatusChange(buyer, e.target.value)
                   }
                   className="border border-gray-300 rounded px-2 py-1"
                 >
