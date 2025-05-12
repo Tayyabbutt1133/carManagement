@@ -8,6 +8,7 @@ const CarDetail = () => {
   const navigate = useNavigate();
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userType, setIsUserType] = useState(null);
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -26,6 +27,12 @@ const CarDetail = () => {
         setLoading(false);
       }
     };
+
+    const user_type = localStorage.getItem("user_type");
+    console.log(user_type);
+    if (user_type) {
+      setIsUserType(user_type);
+    }
 
     fetchCar();
   }, [id]);
@@ -66,18 +73,23 @@ const CarDetail = () => {
       <p className="mt-4 text-gray-700">{car.description}</p>
 
       <div className="flex gap-4 mt-4">
-        <button
-          onClick={() => handleActionClick("rent")}
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-        >
-          Rent a Car
-        </button>
-        <button
-          onClick={() => handleActionClick("purchase")}
-          className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
-        >
-          Purchase a Car
-        </button>
+        {userType === "renter" && (
+          <button
+            onClick={() => handleActionClick("rent")}
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+          >
+            Rent a Car
+          </button>
+        )}
+
+        {userType === "buyer" && (
+          <button
+            onClick={() => handleActionClick("purchase")}
+            className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
+          >
+            Purchase a Car
+          </button>
+        )}
       </div>
     </div>
   );

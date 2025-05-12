@@ -5,19 +5,24 @@ const Sidebar = ({ userType, onLogout }) => {
 
   const navLinks = {
     renter: [
-      // { to: "/dashboard/myrentals", label: "My Rentals" },
-      // { to: "/dashboard/rentalshistory", label: "Rental History" },
-      { to: "/dashboard/pendingreturns", label: "My Rentals" },
+      { to: "/dashboard/myprofile", label: "My Profile" },
+      { to: "/dashboard/pendingrenters", label: "Offers Made (Pending)" },
+      { to: "/dashboard/rentalshistory", label: "My Rent history" },
+      { to: "/dashboard/savedlistings", label: "Saved Listings" },
+      { to: "/dashboard/chat", label: "Chatting" },
     ],
     buyer: [
-      // { to: "/dashboard/mypurchases", label: "My Purchases" },
-      // { to: "/dashboard/savedlistings", label: "Saved Listings" },
-      { to: "/dashboard/offers", label: "Offers Made" },
+      { to: "/dashboard/myprofile", label: "My Profile" },
+      { to: "/dashboard/pendingoffers", label: "Offers Made (Pending)" },
+      { to: "/dashboard/purchaseshistory", label: "My Purchase history" },
+      { to: "/dashboard/savedlistings", label: "Saved Listings" },
+      { to: "/dashboard/chat", label: "Chatting" },
     ],
     admin: [
       { to: "/dashboard/managecars", label: "Post/Manage Cars" },
       { to: "/dashboard/rentreq", label: "Renter Requests" },
       { to: "/dashboard/buyreq", label: "Purchasers Requests" },
+      { to: "/dashboard/chat", label: "Chatting" },
       { to: "/dashboard/auditlogs", label: "Audit Logs" },
     ],
   };
@@ -27,7 +32,7 @@ const Sidebar = ({ userType, onLogout }) => {
   return (
     <aside className="w-64 bg-gray-900 text-white p-6">
       <Link
-        to={'/'}
+        to={"/"}
         className="w-full bg-green-800 text-left  cursor-pointer px-4 py-2 rounded-md transition duration-200 hover:bg-green-600 hover:text-white"
       >
         Go Home

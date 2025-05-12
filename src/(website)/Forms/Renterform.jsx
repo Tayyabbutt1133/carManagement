@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../../firebase/config";
+import { addDoc, collection, doc } from "firebase/firestore";
+import { db, auth } from "../../../firebase/config";
 import { useNavigate } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const RenterForm = () => {
   const [formData, setFormData] = useState({
@@ -14,8 +15,10 @@ const RenterForm = () => {
     carModel: "",
     carYear: "",
     carPrice: "",
+    status: "Pending",
+    form_type: "Renter",
   });
-
+  const [user] = useAuthState(auth);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,14 +44,27 @@ const RenterForm = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!user) {
+      alert("User not authenticated.");
+      return;
+    }
+
     try {
-      const docRef = await addDoc(collection(db, "renters"), formData);
-      console.log("Rental request submitted with ID:", docRef.id);
-      alert("Rental request submitted successfully!");
+      const formsCollectionRef = collection(db, "renter_requests");
+
+      const addingData = await addDoc(formsCollectionRef, {
+        ...formData,
+        userId: user.uid,
+        createdAt: new Date(),
+      });
+
+      console.log("Rent form submitted with ID:", addingData.id);
+      alert("Rent request submitted successfully!");
       navigate("/carslist");
     } catch (error) {
-      console.error("Error adding document:", error);
-      alert("Failed to submit rental request.");
+      console.error("Error submitting form:", error);
+      alert("Failed to submit purchase request.");
     }
   };
 

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc } from "firebase/firestore";
 import { db } from "../../../firebase/config";
 import { useNavigate } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase/config";
 
 const PurchaserForm = () => {
   const [formData, setFormData] = useState({
@@ -15,9 +17,13 @@ const PurchaserForm = () => {
     carModel: "",
     carYear: "",
     carPrice: "",
+    status: "Pending", // by default, the status will be pending, it's get updated by admin
+    form_type: "Purchaser",
   });
-    
-    const navigate = useNavigate();
+  const [user] = useAuthState(auth);
+  // console.log("user id:", user.uid);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedCar = localStorage.getItem("selectedCar");
@@ -43,14 +49,27 @@ const PurchaserForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!user) {
+      alert("User not authenticated.");
+      return;
+    }
+
     try {
-      const docRef = await addDoc(collection(db, "purchasers"), formData);
-      console.log("Rental request submitted with ID:", docRef.id);
-        alert("Rental request submitted successfully!");
-        navigate('/carslist')
+      const formsCollectionRef = collection(db, "purchase_requests");
+
+      const addingData = await addDoc(formsCollectionRef, {
+        ...formData,
+        userId: user.uid,
+        createdAt: new Date(),
+      });
+
+      console.log("Purchase form submitted with ID:", addingData.id);
+      alert("Purchase request submitted successfully!");
+      navigate("/carslist");
     } catch (error) {
-      console.error("Error adding document:", error);
-      alert("Failed to submit rental request.");
+      console.error("Error submitting form:", error);
+      alert("Failed to submit purchase request.");
     }
   };
 

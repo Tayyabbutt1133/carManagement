@@ -3,7 +3,7 @@ import React from 'react'
 const SavedListing = () => {
   return (
     <div>
-      This is saved listing
+      This is Saved Listing
     </div>
   )
 }

@@ -1,22 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { db } from '../../../../firebase/config';
-import { collection, getDocs } from 'firebase/firestore';
+import React, { useEffect, useState } from "react";
+import { db } from "../../../../firebase/config";
+import { collection, getDocs, updateDoc } from "firebase/firestore";
 
 const BuyerReq = () => {
   const [buyerRequests, setBuyerRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchBuyerRequests = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'purchasers'));
-        const buyers = querySnapshot.docs.map(doc => ({
+        const purchaseRequestsRef = collection(db, "purchase_requests");
+        const snapshot = await getDocs(purchaseRequestsRef);
+
+        const allForms = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
+          ref: doc.ref, // optional, if you need to update/delete later
         }));
-        setBuyerRequests(buyers);
+
+        console.log("Total purchase requests found:", allForms.length);
+        setBuyerRequests(allForms);
       } catch (error) {
-        console.error('Error fetching buyer data:', error);
+        console.error("Error fetching buyer data:", error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -24,8 +31,25 @@ const BuyerReq = () => {
 
     fetchBuyerRequests();
   }, []);
+  const handleStatusChange = async (formRef, newStatus) => {
+    try {
+      await updateDoc(formRef, { status: newStatus });
+      setBuyerRequests((prev) =>
+        prev.map((req) =>
+          req.ref.path === formRef.path ? { ...req, status: newStatus } : req
+        )
+      );
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
-  if (loading) return <p className="text-center mt-10">Loading buyer requests...</p>;
+  if (loading)
+    return <p className="text-center mt-10">Loading buyer requests...</p>;
+  if (error)
+    return <p className="text-center mt-10 text-red-500">Error: {error}</p>;
+  if (buyerRequests.length === 0)
+    return <p className="text-center mt-10">No buyer requests found</p>;
 
   return (
     <div className="overflow-x-auto rounded-xl shadow p-4">
@@ -40,6 +64,7 @@ const BuyerReq = () => {
             <th className="py-2 px-4 border">Car</th>
             <th className="py-2 px-4 border">Price</th>
             <th className="py-2 px-4 border">Payment</th>
+            <th className="py-2 px-4 border">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -49,9 +74,24 @@ const BuyerReq = () => {
               <td className="py-2 px-4 border">{buyer.email}</td>
               <td className="py-2 px-4 border">{buyer.phone}</td>
               <td className="py-2 px-4 border">{buyer.address}</td>
-              <td className="py-2 px-4 border">{`${buyer.carBrand} ${buyer.carModel} (${buyer.carYear})`}</td>
+              <td className="py-2 px-4 border">
+                {buyer.carBrand} {buyer.carModel} ({buyer.carYear})
+              </td>
               <td className="py-2 px-4 border">${buyer.carPrice}</td>
               <td className="py-2 px-4 border">{buyer.paymentMethod}</td>
+              <td className="py-2 px-4 border">
+                <select
+                  value={buyer.status || "Pending"}
+                  onChange={(e) =>
+                    handleStatusChange(buyer.ref, e.target.value)
+                  }
+                  className="border border-gray-300 rounded px-2 py-1"
+                >
+                  <option>Pending</option>
+                  <option>Accepted</option>
+                  <option>Rejected</option>
+                </select>
+              </td>
             </tr>
           ))}
         </tbody>
