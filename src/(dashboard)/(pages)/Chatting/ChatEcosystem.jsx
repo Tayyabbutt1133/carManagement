@@ -64,7 +64,7 @@ export default function ChatEcoystem() {
   const renderTitle = () => {
     switch (role) {
       case "admin":
-        return "Admin Dashboard – Chat with Users";
+        return "Chat with Users";
       case "renter":
       case "buyer":
         return "Support Chat – Talk with Admin";
