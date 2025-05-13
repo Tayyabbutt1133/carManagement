@@ -125,7 +125,7 @@ const Sidebar = ({ userType, onLogout }) => {
       <div className="border-t border-gray-700 p-4">
         <button
           onClick={onLogout}
-          className="flex items-center gap-2 text-red-400 hover:text-white transition hover:bg-red-600 w-full py-2 px-2 rounded-md"
+          className="flex cursor-pointer items-center gap-2 text-red-400 hover:text-white transition hover:bg-red-600 w-full py-2 px-2 rounded-md"
           title={isCollapsed ? "Logout" : ""}
         >
           <LogOut className="w-4 h-4" />

@@ -2,6 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { db } from "../../../../firebase/config";
 import { addDoc, collection } from "firebase/firestore";
+import {
+  FaCarSide,
+  FaGasPump,
+  FaTachometerAlt,
+  FaRegHeart,
+} from "react-icons/fa";
+import { MdCalendarToday } from "react-icons/md";
 
 const CarCard = ({ cars }) => {
   const submitFavourite = async (car) => {
@@ -28,50 +35,58 @@ const CarCard = ({ cars }) => {
   };
 
   return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
       {cars.map((car) => (
         <div
           key={car.id}
-          className="bg-white rounded-2xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition duration-300"
+          className="bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 p-5 flex flex-col justify-between"
         >
-          <div className="flex justify-between items-start mb-3">
-            <h3 className="text-xl font-semibold text-gray-800">
-              {car.brand} {car.model}
-            </h3>
-            <span className="text-sm text-white bg-blue-600 px-3 py-1 rounded-full">
-              {car.year}
-            </span>
+          <div>
+            <div className="flex justify-between items-start mb-3">
+              <h3 className="text-xl font-semibold text-gray-800">
+                <FaCarSide className="inline mr-2 text-blue-600" />
+                {car.brand} {car.model}
+              </h3>
+              <span className="flex items-center gap-1 text-sm text-white bg-blue-600 px-3 py-1 rounded-full">
+                <MdCalendarToday size={14} />
+                {car.year}
+              </span>
+            </div>
+
+            <div className="space-y-2 text-sm text-gray-700">
+              <p>
+                <FaTachometerAlt className="inline mr-1 text-gray-500" />
+                <span className="font-medium">Mileage:</span> {car.mileage} km
+              </p>
+              <p>
+                <FaGasPump className="inline mr-1 text-gray-500" />
+                <span className="font-medium">Fuel:</span>{" "}
+                <span className="bg-gray-200 px-2 py-0.5 rounded text-sm">
+                  {car.fuelType}
+                </span>
+              </p>
+            </div>
           </div>
 
-          <p className="text-gray-600 mb-1">
-            <span className="font-medium text-gray-700">Mileage:</span>{" "}
-            {car.mileage} km
-          </p>
-
-          <p className="text-gray-600 mb-1">
-            <span className="font-medium text-gray-700">Fuel:</span>{" "}
-            <span className="inline-block bg-gray-200 px-2 py-0.5 rounded text-sm">
-              {car.fuelType}
-            </span>
-          </p>
-
-          <div className="mt-4">
+          <div className="mt-5">
             <p className="text-lg font-semibold text-green-600">
               ${car.price.toLocaleString()}
             </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to={`/carslist/${car.id}`}>
-              <button className="mt-4 cursor-pointer inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm shadow hover:bg-blue-700 transition duration-200">
-                View Detail
+            <div className="mt-4 flex gap-3">
+              <Link to={`/carslist/${car.id}`} className="w-full">
+                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200">
+                  View Details
+                </button>
+              </Link>
+
+              <button
+                onClick={() => submitFavourite(car)}
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200"
+              >
+                <FaRegHeart className="text-white" />
+                Save
               </button>
-            </Link>
-            <button
-              onClick={submitFavourite}
-              className="mt-4 text-sm cursor-pointer inline-block bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 transition duration-200"
-            >
-              Save Favourite
-            </button>
+            </div>
           </div>
         </div>
       ))}

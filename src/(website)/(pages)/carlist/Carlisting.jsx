@@ -24,7 +24,7 @@ const CarList = () => {
   }, []);
 
   return (
-    <div className="mt-6 mx-8 h-screen">
+    <div className="mt-6 mx-8">
       <h2 className="text-2xl font-semibold mb-4">Available Cars</h2>
       {cars.length === 0 ? (
         <p className="text-gray-600">Checking....</p>
