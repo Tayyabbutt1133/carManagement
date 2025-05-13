@@ -43,7 +43,7 @@ export default function ChatEcosystem() {
         // format from your database: admin_[userId]
         const id = `admin_${user.uid}`;
         setChatId(id);
-        
+
         // Make sure the chat document exists in Firestore
         try {
           const chatRef = doc(db, "chats", id);
@@ -52,7 +52,7 @@ export default function ChatEcosystem() {
             // Create the chat document if it doesn't exist
             await setDoc(chatRef, {
               users: ["admin", user.uid],
-              lastUpdated: serverTimestamp()
+              lastUpdated: serverTimestamp(),
             });
           }
         } catch (error) {
@@ -67,17 +67,17 @@ export default function ChatEcosystem() {
   // Listen to messages for the active chat
   useEffect(() => {
     let unsub;
-    
+
     if ((role === "admin" && activeChat) || (role !== "admin" && chatId)) {
       const chatToListen = role === "admin" ? activeChat : chatId;
-      
+
       unsub = listenToMessages(chatToListen, (snapshot) => {
         setMessages(
           snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
         );
       });
     }
-    
+
     return () => {
       if (unsub) unsub();
     };
@@ -91,10 +91,10 @@ export default function ChatEcosystem() {
   const handleSend = async (e) => {
     e.preventDefault();
     if (!text.trim()) return;
-    
+
     const id = role === "admin" ? activeChat : chatId;
     if (!id) return;
-    
+
     const senderId = role === "admin" ? "admin" : user.uid;
     await sendMessageToChat(id, senderId, text);
     setText("");
@@ -117,10 +117,12 @@ export default function ChatEcosystem() {
   };
 
   // Find the currently active chat's user info
-  const activeChatUserInfo = chatList.find(chat => chat.id === activeChat)?.userInfo;
+  const activeChatUserInfo = chatList.find(
+    (chat) => chat.id === activeChat
+  )?.userInfo;
 
   return (
-    <div className="h-screen flex bg-gray-100 rounded-2xl overflow-hidden border shadow">
+    <div className="h-screen flex ">
       {/* Left Panel - Chat List (Admin only) */}
       {role === "admin" && (
         <div className="w-1/3 bg-white border-r p-4 overflow-y-auto">
@@ -140,17 +142,17 @@ export default function ChatEcosystem() {
         {/* Chat Header */}
         <div className="p-4 border-b bg-white">
           <h3 className="font-medium text-lg">
-            {role === "admin" && activeChatUserInfo ? 
-              `${activeChatUserInfo.name} (${activeChatUserInfo.role})` : 
-              "Support Chat"}
+            {role === "admin" && activeChatUserInfo
+              ? `${activeChatUserInfo.name} (${activeChatUserInfo.role})`
+              : "Support Chat"}
           </h3>
         </div>
-        
+
         {/* Chat Messages */}
         <div className="flex-1 overflow-y-auto p-4 bg-white">
-          <ChatMessages 
-            messages={messages} 
-            currentUserId={role === "admin" ? "admin" : user?.uid} 
+          <ChatMessages
+            messages={messages}
+            currentUserId={role === "admin" ? "admin" : user?.uid}
           />
           {!messages.length && (
             <p className="text-center text-gray-400 mt-10">
@@ -159,7 +161,7 @@ export default function ChatEcosystem() {
           )}
           <div ref={messagesEndRef} />
         </div>
-        
+
         {/* Chat Input */}
         {((role === "admin" && activeChat) || (role !== "admin" && chatId)) && (
           <div className="border-t p-4 bg-white">
@@ -170,7 +172,7 @@ export default function ChatEcosystem() {
             />
           </div>
         )}
-        
+
         {role === "admin" && !activeChat && (
           <div className="flex-1 flex items-center justify-center bg-gray-50">
             <p className="text-gray-500">Select a chat to start messaging</p>
