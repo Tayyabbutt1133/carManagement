@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { saveNotification } from "../../../../../utils/NotificationsUtils";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-const PostCarForm = () => {
+const DealerPostCar = () => {
   const [formData, setFormData] = useState({
     model: "",
     brand: "",
@@ -15,8 +15,8 @@ const PostCarForm = () => {
     fuelType: "",
     transmission: "",
     description: "",
-    listingType: "sale", // Default to "sale"
-    userType: "admin",
+    listingType: "sale", // default to sale
+    userType: "car_dealer",
   });
 
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ const PostCarForm = () => {
         listingType: "sale",
       });
 
-      navigate("/dashboard/managecars");
+      navigate("/dashboard/dealerposting");
     } catch (error) {
       console.error("Error posting car:", error);
     }
@@ -131,7 +131,7 @@ const PostCarForm = () => {
           placeholder="e.g., 25000"
         />
 
-        {/* Dropdown for Sale/Rent */}
+        {/* Listing Type Dropdown */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Listing Type
@@ -200,4 +200,4 @@ const Input = ({
   </div>
 );
 
-export default PostCarForm;
+export default DealerPostCar;

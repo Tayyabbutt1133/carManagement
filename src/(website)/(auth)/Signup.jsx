@@ -11,7 +11,7 @@ const Signup = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "renter",
+    role: "car_dealer",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -175,23 +175,23 @@ const Signup = () => {
                 <input
                   type="radio"
                   name="role"
-                  value="renter"
-                  checked={formData.role === "renter"}
+                  value="car_dealer"
+                  checked={formData.role === "car_dealer"}
                   onChange={handleChange}
                   className="accent-blue-600"
                 />
-                Renter
+                Car dealer
               </label>
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
                   name="role"
-                  value="buyer"
-                  checked={formData.role === "buyer"}
+                  value="customer"
+                  checked={formData.role === "customer"}
                   onChange={handleChange}
                   className="accent-blue-600"
                 />
-                Buyer
+                Customer
               </label>
             </div>
           </div>

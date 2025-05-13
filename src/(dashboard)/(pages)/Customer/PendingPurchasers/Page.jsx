@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { auth, db } from "../../../../../firebase/config";
+import { db, auth } from "../../../../../firebase/config";
 import { Clock, DollarSign, CalendarCheck, CarFront } from "lucide-react";
 
-const PurchasersHistory = () => {
+const PendingPurchasers = () => {
   const [user] = useAuthState(auth);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,12 +12,13 @@ const PurchasersHistory = () => {
   useEffect(() => {
     if (!user) return;
 
-    const fetchPurchaseHistory = async () => {
+    const fetchPendingPurchaser = async () => {
       try {
+        // Fetching requests where the userId matches the authenticated user (not listerId)
         const q = query(
           collection(db, "purchase_requests"),
-          where("userId", "==", user.uid),
-          where("status", "==", "Accepted")
+          where("userId", "==", user.uid), // Here, we compare userId with user.uid
+          where("status", "==", "Pending")
         );
 
         const snapshot = await getDocs(q);
@@ -27,33 +28,33 @@ const PurchasersHistory = () => {
           ...doc.data(),
         }));
 
-        setHistory(data);
+        setHistory(data); // Storing fetched data in history state
       } catch (error) {
-        console.error("Error fetching purchase history:", error);
+        console.error("Error fetching pending purchaser history:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false once data is fetched
       }
     };
 
-    fetchPurchaseHistory();
+    fetchPendingPurchaser(); // Trigger the fetch when user is available
   }, [user]);
 
   if (loading)
     return (
       <div className="text-center text-gray-500">
-        Loading purchase history...
+        Loading pending purchases...
       </div>
     );
 
   return (
     <div className="mt-10 px-4 sm:px-6 lg:px-8">
       <h2 className="text-3xl font-semibold mb-6 text-gray-800 border-b pb-2">
-        Your Accepted Purchases
+        My Pending Purchases
       </h2>
 
       {history.length === 0 ? (
         <p className="text-gray-500 text-lg text-center">
-          You have no accepted purchases.
+          You have no pending purchase requests.
         </p>
       ) : (
         <ul className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
@@ -73,9 +74,9 @@ const PurchasersHistory = () => {
               </div>
 
               <div className="flex items-center gap-2 text-gray-600">
-                <Clock className="w-4 h-4 text-emerald-500" />
+                <Clock className="w-4 h-4 text-yellow-500" />
                 <span className="text-sm font-medium">Status:</span>
-                <span className="text-emerald-600 font-semibold">
+                <span className="text-yellow-600 font-semibold">
                   {entry.status}
                 </span>
               </div>
@@ -94,4 +95,4 @@ const PurchasersHistory = () => {
   );
 };
 
-export default PurchasersHistory;
+export default PendingPurchasers;

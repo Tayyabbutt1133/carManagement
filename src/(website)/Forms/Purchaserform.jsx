@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../../firebase/config";
 import { saveNotification } from "../../../utils/NotificationsUtils";
-import { Car, BadgeCent, Calendar, Settings } from "lucide-react";
+import { Car, BadgeCent, Calendar, Settings, AudioWaveform } from "lucide-react";
 
 const PurchaserForm = () => {
   const [formData, setFormData] = useState({
@@ -36,6 +36,8 @@ const PurchaserForm = () => {
         carModel: car.model || "",
         carYear: car.year || "",
         carPrice: car.price || "",
+        listerType: car.userType || "",
+        listerUid : car.listerUid || "",
       }));
     }
   }, []);
@@ -112,6 +114,12 @@ const PurchaserForm = () => {
               <BadgeCent className="w-4 h-4 text-gray-500" />
               <span>
                 <strong>Price:</strong> ${formData.carPrice}
+              </span>
+            </li>
+            <li className="flex items-center gap-2">
+              <AudioWaveform className="w-4 h-4 text-gray-500" />
+              <span>
+                <strong>Car Lister:</strong> {formData.userType}
               </span>
             </li>
           </ul>

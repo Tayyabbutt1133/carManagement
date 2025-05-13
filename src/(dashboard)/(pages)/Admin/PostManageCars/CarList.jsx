@@ -1,7 +1,5 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { db } from "../../../../../firebase/config";
-import { useState } from "react";
 import { getDocs, collection } from "firebase/firestore";
 
 const CarList = () => {
@@ -35,6 +33,7 @@ const CarList = () => {
             <th className="px-6 py-3">Price</th>
             <th className="px-6 py-3">Transmission</th>
             <th className="px-6 py-3">Year</th>
+            <th className="px-6 py-3">Type</th> {/* new column */}
           </tr>
         </thead>
         <tbody>
@@ -46,10 +45,10 @@ const CarList = () => {
               <td className="px-6 py-4 font-medium">{index + 1}</td>
               <td className="px-6 py-4">{car.brand}</td>
               <td className="px-6 py-4">{car.model}</td>
-              <td className="px-6 py-4">{car.price}</td>
+              <td className="px-6 py-4">${car.price}</td>
               <td className="px-6 py-4">{car.transmission}</td>
               <td className="px-6 py-4">{car.year}</td>
-        
+              <td className="px-6 py-4 capitalize">{car.listingType}</td>
             </tr>
           ))}
         </tbody>

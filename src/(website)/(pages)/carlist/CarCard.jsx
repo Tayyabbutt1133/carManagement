@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../../../../firebase/config";
 import { addDoc, collection } from "firebase/firestore";
@@ -11,9 +11,14 @@ import {
 import { MdCalendarToday } from "react-icons/md";
 
 const CarCard = ({ cars }) => {
-  const submitFavourite = async (car) => {
-    const userType = localStorage.getItem("user_type");
+  const [userType, setUserType] = useState(null);
 
+  useEffect(() => {
+    const type = localStorage.getItem("user_type");
+    setUserType(type);
+  }, []);
+
+  const submitFavourite = async (car) => {
     try {
       await addDoc(collection(db, "favourites"), {
         carId: car.id,
@@ -23,14 +28,13 @@ const CarCard = ({ cars }) => {
         mileage: car.mileage,
         fuelType: car.fuelType,
         price: car.price,
-        userType: userType,
+        userType,
         createdAt: new Date(),
       });
-
       alert("Car added to favourites!");
     } catch (error) {
       console.error("Error adding to favourites:", error);
-      alert("Failed to add favourite.");
+      alert("Failed to add to favourites.");
     }
   };
 
@@ -39,12 +43,28 @@ const CarCard = ({ cars }) => {
       {cars.map((car) => (
         <div
           key={car.id}
-          className="bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 p-5 flex flex-col justify-between"
+          className="relative bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 p-5"
         >
-          <div>
-            <div className="flex justify-between items-start mb-3">
-              <h3 className="text-xl font-semibold text-gray-800">
-                <FaCarSide className="inline mr-2 text-blue-600" />
+          {/* Sale/Rent Badge */}
+          {car.listingType && (
+            <div className="">
+              <span
+                className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${
+                  car.listingType === "rent"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-green-100 text-green-800"
+                }`}
+              >
+                {car.listingType}
+              </span>
+            </div>
+          )}
+
+          {/* Title */}
+          <div className="mb-4 mt-4">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                <FaCarSide className="text-blue-600" />
                 {car.brand} {car.model}
               </h3>
               <span className="flex items-center gap-1 text-sm text-white bg-blue-600 px-3 py-1 rounded-full">
@@ -53,14 +73,15 @@ const CarCard = ({ cars }) => {
               </span>
             </div>
 
+            {/* Info Section */}
             <div className="space-y-2 text-sm text-gray-700">
-              <p>
-                <FaTachometerAlt className="inline mr-1 text-gray-500" />
+              <p className="flex items-center gap-2">
+                <FaTachometerAlt className="text-gray-500" />
                 <span className="font-medium">Mileage:</span> {car.mileage} km
               </p>
-              <p>
-                <FaGasPump className="inline mr-1 text-gray-500" />
-                <span className="font-medium">Fuel:</span>{" "}
+              <p className="flex items-center gap-2">
+                <FaGasPump className="text-gray-500" />
+                <span className="font-medium">Fuel:</span>
                 <span className="bg-gray-200 px-2 py-0.5 rounded text-sm">
                   {car.fuelType}
                 </span>
@@ -68,24 +89,27 @@ const CarCard = ({ cars }) => {
             </div>
           </div>
 
-          <div className="mt-5">
-            <p className="text-lg font-semibold text-green-600">
+          {/* Footer */}
+          <div className="mt-4">
+            <p className="text-lg font-semibold text-green-600 mb-3">
               ${car.price.toLocaleString()}
             </p>
-            <div className="mt-4 flex gap-3">
+            <div className="flex gap-3">
               <Link to={`/carslist/${car.id}`} className="w-full">
-                <button className="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200">
+                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200">
                   View Details
                 </button>
               </Link>
 
-              <button
-                onClick={() => submitFavourite(car)}
-                className="w-full cursor-pointer flex items-center justify-center gap-2 bg-pink-800 hover:bg-pink-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200"
-              >
-                <FaRegHeart className="text-white" />
-                Save
-              </button>
+              {userType === "customer" && (
+                <button
+                  onClick={() => submitFavourite(car)}
+                  className="w-full flex items-center justify-center gap-2 bg-pink-800 hover:bg-pink-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200"
+                >
+                  <FaRegHeart className="text-white" />
+                  Save
+                </button>
+              )}
             </div>
           </div>
         </div>

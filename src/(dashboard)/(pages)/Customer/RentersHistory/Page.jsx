@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db, auth } from "../../../../../firebase/config";
-import { useState, useEffect } from "react";
+import { auth, db } from "../../../../../firebase/config";
 
-const PendingRenters = () => {
+const RentersHistory = () => {
   const [user] = useAuthState(auth);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,12 +11,12 @@ const PendingRenters = () => {
   useEffect(() => {
     if (!user) return;
 
-    const fetchPendingRenter = async () => {
+    const fetchRenterHistory = async () => {
       try {
         const q = query(
           collection(db, "renter_requests"),
           where("userId", "==", user.uid),
-          where("status", "==", "Pending")
+          where("status", "==", "accepted")
         );
 
         const snapshot = await getDocs(q);
@@ -35,14 +34,14 @@ const PendingRenters = () => {
       }
     };
 
-    fetchPendingRenter();
+    fetchRenterHistory();
   }, [user]);
 
   if (loading) return <div>Loading renter history...</div>;
 
   return (
     <div className="mt-10">
-      <h2 className="text-2xl font-bold mb-4">Your Accepted Rentals</h2>
+      <h2 className="text-2xl font-bold mb-4">My Accepted Rentals</h2>
       {history.length === 0 ? (
         <p>No accepted rentals found.</p>
       ) : (
@@ -75,4 +74,4 @@ const PendingRenters = () => {
   );
 };
 
-export default PendingRenters;
+export default RentersHistory;

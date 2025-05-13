@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../../../../firebase/config";
-import { collection, getDocs, updateDoc } from "firebase/firestore";
+import { db, auth } from "../../../../firebase/config";
+import { collection, getDocs, updateDoc, query,where } from "firebase/firestore";
 import { saveNotification } from "../../../../utils/NotificationsUtils";
+import { useAuthState } from "react-firebase-hooks/auth";
+
 
 const RenterReq = () => {
   const [renterRequests, setRenterRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [user] = useAuthState(auth);
 
   useEffect(() => {
     const fetchRenterRequests = async () => {
       try {
-        const purchaseRequestsRef = collection(db, "renter_requests");
-        const snapshot = await getDocs(purchaseRequestsRef);
+        const q = query(
+          collection(db, "renter_requests"),
+          where("listerUid", "==", user.uid),
+          where("form_type", "==", "Renter"));
+        const snapshot = await getDocs(q);
 
         const allForms = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -92,9 +98,9 @@ const RenterReq = () => {
                   }
                   className="border border-gray-300 rounded px-2 py-1"
                 >
-                  <option>Pending</option>
-                  <option>Accepted</option>
-                  <option>Rejected</option>
+                  <option>pending</option>
+                  <option>accepted</option>
+                  <option>rejected</option>
                 </select>
               </td>
             </tr>

@@ -13,6 +13,7 @@ import {
   Car,
   FileText,
   Users,
+  LockIcon,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -21,34 +22,40 @@ const Sidebar = ({ userType, onLogout }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const navLinks = {
-    renter: [
+    car_dealer: [
       { to: "/dashboard/myprofile", label: "My Profile", icon: <User /> },
+      { to: "/dashboard/dealerposting", label: "Manage Cars", icon: <Car /> },
       {
-        to: "/dashboard/pendingrenters",
-        label: "Offers Made",
-        icon: <Clock />,
+        to: "/dashboard/dealerrentreq",
+        label: "Renter Requests",
+        icon: <User />,
       },
       {
-        to: "/dashboard/rentalshistory",
-        label: "Rent History",
-        icon: <History />,
-      },
-      {
-        to: "/dashboard/savedlistings",
-        label: "Saved Listings",
-        icon: <Heart />,
+        to: "/dashboard/dealerpurchasereq",
+        label: "Purchaser Requests",
+        icon: <User />,
       },
       { to: "/dashboard/chat", label: "Chatting", icon: <MessageSquare /> },
       { to: "/dashboard/notify", label: "Notifications", icon: <Bell /> },
     ],
-    buyer: [
+    customer: [
       { to: "/dashboard/myprofile", label: "My Profile", icon: <User /> },
-      { to: "/dashboard/pendingoffers", label: "Offers Made", icon: <Clock /> },
+      {
+        to: "/dashboard/rentalshistory",
+        label: "Renting History",
+        icon: <History />,
+      },
+      {
+        to: "/dashboard/pendingrenters",
+        label: "Renting Requests",
+        icon: <Clock />,
+      },
       {
         to: "/dashboard/purchaseshistory",
         label: "Purchase History",
         icon: <History />,
       },
+      { to: "/dashboard/pendingoffers", label: "Purchase Requests", icon: <Clock /> },
       {
         to: "/dashboard/savedlistings",
         label: "Saved Listings",
@@ -61,6 +68,7 @@ const Sidebar = ({ userType, onLogout }) => {
       { to: "/dashboard/managecars", label: "Manage Cars", icon: <Car /> },
       { to: "/dashboard/rentreq", label: "Renter Requests", icon: <Users /> },
       { to: "/dashboard/buyreq", label: "Purchaser Requests", icon: <Users /> },
+      { to: "/dashboard/pendingreg", label: "Pending Reg", icon: <LockIcon /> },
       { to: "/dashboard/chat", label: "Chatting", icon: <MessageSquare /> },
       { to: "/dashboard/notify", label: "Notifications", icon: <Bell /> },
       { to: "/dashboard/auditlogs", label: "Audit Logs", icon: <FileText /> },

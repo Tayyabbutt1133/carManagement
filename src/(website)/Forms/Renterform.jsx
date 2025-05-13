@@ -4,7 +4,13 @@ import { db, auth } from "../../../firebase/config";
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { saveNotification } from "../../../utils/NotificationsUtils";
-import { Car, Settings, Calendar, BadgeCent } from "lucide-react";
+import {
+  Car,
+  Settings,
+  Calendar,
+  BadgeCent,
+  AudioWaveform,
+} from "lucide-react";
 
 const RenterForm = () => {
   const [formData, setFormData] = useState({
@@ -36,6 +42,8 @@ const RenterForm = () => {
         carModel: car.model || "",
         carYear: car.year || "",
         carPrice: car.price || "",
+        listerType: car.userType || "",
+        listerUid: car.listerUid || "",
       }));
     }
   }, []);
@@ -115,6 +123,12 @@ const RenterForm = () => {
             <BadgeCent className="w-4 h-4 text-gray-500" />
             <span>
               <strong>Price/Day:</strong> ${formData.carPrice}
+            </span>
+          </li>
+          <li className="flex items-center gap-2">
+            <AudioWaveform className="w-4 h-4 text-gray-500" />
+            <span>
+              <strong>Car Lister:</strong> {formData.userType}
             </span>
           </li>
         </ul>

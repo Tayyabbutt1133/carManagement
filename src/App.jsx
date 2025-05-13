@@ -17,12 +17,17 @@ import Purchaserform from "./(website)/Forms/Purchaserform";
 import Renterform from "./(website)/Forms/Renterform";
 import BuyerReq from "./(dashboard)/(pages)/Admin/BuyerReq";
 import ChatEcoystem from "./(dashboard)/(pages)/Chatting/ChatEcosystem";
-import PendingRenters from "./(dashboard)/(pages)/Renter/PendingRenters/Page";
-import RentersHistory from "./(dashboard)/(pages)/Renter/RentersHistory/Page";
+import PendingRenters from "./(dashboard)/(pages)/Customer/PendingRenters/Page";
+import RentersHistory from "./(dashboard)/(pages)/Customer/RentersHistory/Page";
+import PurchasersHistory from "./(dashboard)/(pages)/Customer/PurchasersHistory/Page";
+import PendingPurchasers from "./(dashboard)/(pages)/Customer/PendingPurchasers/Page";
 import MyProfile from "./(dashboard)/(pages)/MyProfile";
-import PurchasersHistory from "./(dashboard)/(pages)/Purchaser/PurchasersHistory/Page";
-import PendingPurchasers from "./(dashboard)/(pages)/Purchaser/PendingPurchasers/Page";
 import Notifications from "./(dashboard)/(pages)/Notifications";
+import Pendingreg from "./(dashboard)/(pages)/Admin/Pendingreg";
+import ReqforRent from "./(dashboard)/(pages)/CarDealer/ReqforRent";
+import DealerManageCars from "./(dashboard)/(pages)/CarDealer/CarPosting/Page";
+import ReqforPurchase from "./(dashboard)/(pages)/CarDealer/ReqforPurchase";
+import DealerPostCar from "./(dashboard)/(pages)/CarDealer/CarPosting/DealerPostCar";
 import { useEffect } from "react";
 import { generateToken, messaging } from "../firebase/config";
 import { onMessage } from "firebase/messaging";
@@ -36,13 +41,8 @@ function App() {
 
     onMessage(messaging, (payload) => {
       console.log(payload);
-    })
-
+    });
   }, []);
-
-  
-
-
 
   const location = useLocation();
   const hideLayout = location.pathname.startsWith("/dashboard");
@@ -79,11 +79,16 @@ function App() {
           <Route path="auditlogs" element={<Auditlogs />} />
           <Route path="savedlistings" element={<SavedListing />} />
           <Route path="chat" element={<ChatEcoystem />} />
+          <Route path="pendingreg" element={<Pendingreg />} />
+          <Route path="dealerrentreq" element={<ReqforRent />} />
+          <Route path="dealerpurchasereq" element={<ReqforPurchase />} />
+          <Route path="dealerposting" element={<DealerManageCars />} />
+          <Route path="dealerpostform" element={<DealerPostCar />} />
           <Route path="pendingrenters" element={<PendingRenters />} />
           <Route path="rentalshistory" element={<RentersHistory />} />
           <Route path="pendingoffers" element={<PendingPurchasers />} />
           <Route path="purchaseshistory" element={<PurchasersHistory />} />
-          <Route path="notify" element={<Notifications/>} />
+          <Route path="notify" element={<Notifications />} />
           <Route />
         </Route>
       </Routes>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const [userType, setUserType] = useState("");
@@ -14,7 +15,7 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate('/')
+    navigate("/");
   };
 
   return (
