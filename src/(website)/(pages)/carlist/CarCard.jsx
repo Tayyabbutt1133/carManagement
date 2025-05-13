@@ -74,14 +74,14 @@ const CarCard = ({ cars }) => {
             </p>
             <div className="mt-4 flex gap-3">
               <Link to={`/carslist/${car.id}`} className="w-full">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200">
+                <button className="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200">
                   View Details
                 </button>
               </Link>
 
               <button
                 onClick={() => submitFavourite(car)}
-                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200"
+                className="w-full cursor-pointer flex items-center justify-center gap-2 bg-pink-800 hover:bg-pink-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200"
               >
                 <FaRegHeart className="text-white" />
                 Save

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { addDoc, collection, doc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { db, auth } from "../../../firebase/config";
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { saveNotification } from "../../../utils/NotificationsUtils";
+import { Car, Settings, Calendar, BadgeCent } from "lucide-react";
 
 const RenterForm = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ const RenterForm = () => {
     address: "",
     paymentMethod: "Credit Card",
   });
+
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
 
@@ -45,6 +47,7 @@ const RenterForm = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -63,44 +66,58 @@ const RenterForm = () => {
       });
 
       saveNotification({
-        message: `${formData.fullName} (${formData.form_type}) has Requested for Purchase of Car ${formData.carBrand} ${formData.carModel}`,
+        message: `${formData.fullName} (${formData.form_type}) has Requested for Rent of Car ${formData.carBrand} ${formData.carModel}`,
         fromRole: "renter",
         toRoles: ["admin"],
         type: "carforRent_requested_form",
       });
 
-      console.log("Rent form submitted with ID:", addingData.id);
       alert("Rent request submitted successfully!");
       navigate("/carslist");
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Failed to submit purchase request.");
+      alert("Failed to submit rent request.");
     }
   };
 
   return (
-    <div className="mt-12 bg-white shadow-lg rounded-lg p-8">
+    <div className="mt-12 bg-white shadow-lg rounded-2xl p-8">
       <h2 className="text-3xl font-semibold mb-8 text-gray-800 text-center">
         Car Rental Form
       </h2>
 
       {/* Car Info */}
       <div className="mb-10 border border-gray-200 p-6 rounded-md bg-gray-50">
-        <h3 className="text-xl font-semibold mb-4 text-gray-700">
+        <h3 className="text-xl font-semibold mb-4 text-gray-700 flex items-center gap-2">
+          <Car className="w-5 h-5 text-blue-500" />
           Car Details
         </h3>
-        <p>
-          <strong>Brand:</strong> {formData.carBrand}
-        </p>
-        <p>
-          <strong>Model:</strong> {formData.carModel}
-        </p>
-        <p>
-          <strong>Year:</strong> {formData.carYear}
-        </p>
-        <p>
-          <strong>Price/Day:</strong> ${formData.carPrice}
-        </p>
+        <ul className="space-y-3 text-gray-700">
+          <li className="flex items-center gap-2">
+            <Car className="w-4 h-4 text-gray-500" />
+            <span>
+              <strong>Brand:</strong> {formData.carBrand}
+            </span>
+          </li>
+          <li className="flex items-center gap-2">
+            <Settings className="w-4 h-4 text-gray-500" />
+            <span>
+              <strong>Model:</strong> {formData.carModel}
+            </span>
+          </li>
+          <li className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-gray-500" />
+            <span>
+              <strong>Year:</strong> {formData.carYear}
+            </span>
+          </li>
+          <li className="flex items-center gap-2">
+            <BadgeCent className="w-4 h-4 text-gray-500" />
+            <span>
+              <strong>Price/Day:</strong> ${formData.carPrice}
+            </span>
+          </li>
+        </ul>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -194,7 +211,7 @@ const RenterForm = () => {
 
         <button
           type="submit"
-          className="w-fit px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition"
+          className="w-fit cursor-pointer px-6 py-3 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition"
         >
           Submit Rental Request
         </button>
