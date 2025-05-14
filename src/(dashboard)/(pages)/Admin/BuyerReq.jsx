@@ -32,7 +32,7 @@ const BuyerReq = () => {
           ref: doc.ref, // optional, if you need to update/delete later
         }));
 
-        console.log("Total purchase requests found:", allForms.length);
+        // console.log("Total purchase requests found:", allForms.length);
         setBuyerRequests(allForms);
       } catch (error) {
         console.error("Error fetching buyer data:", error);

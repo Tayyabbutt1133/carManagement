@@ -10,6 +10,8 @@ import {
 import ChatSelector from "./ChatSelector";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
+import { doc, getDoc, addDoc } from "firebase/firestore";
+import { db } from "../../../../firebase/config";
 
 export default function ChatEcosystem() {
   const [user] = useAuthState(auth);
@@ -104,17 +106,7 @@ export default function ChatEcosystem() {
     setActiveChat(selectedChatId);
   };
 
-  const renderTitle = () => {
-    switch (role) {
-      case "admin":
-        return "Chats";
-      case "renter":
-      case "buyer":
-        return "Support Chat";
-      default:
-        return "Chat";
-    }
-  };
+
 
   // Find the currently active chat's user info
   const activeChatUserInfo = chatList.find(
@@ -127,7 +119,7 @@ export default function ChatEcosystem() {
       {role === "admin" && (
         <div className="w-1/3 bg-white border-r p-4 overflow-y-auto">
           <h2 className="text-xl font-semibold mb-4 text-gray-800">
-            {renderTitle()}
+          Your Messaging Ecosystem
           </h2>
           <ChatSelector
             chatList={chatList}

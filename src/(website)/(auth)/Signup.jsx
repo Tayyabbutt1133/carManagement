@@ -12,6 +12,7 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
     role: "car_dealer",
+    reg_status : "pending",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +51,6 @@ const Signup = () => {
       );
 
       const user = userCredential.user;
-      // console.log("firebase response :", user);
 
       // setting access_token and userType to localstorage
       localStorage.setItem("access_token", await user.getIdToken());
@@ -61,6 +61,7 @@ const Signup = () => {
         name: formData.name,
         email: formData.email,
         role: formData.role,
+        reg_status : formData.reg_status,
         createdAt: new Date(),
       });
 

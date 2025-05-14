@@ -9,10 +9,12 @@ const RenterReq = () => {
   const [renterRequests, setRenterRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user] = useAuthState(auth);
+  const [error, setError] = useState();
 
   useEffect(() => {
     const fetchRenterRequests = async () => {
       try {
+        // console.log(user.uid);
         const q = query(
           collection(db, "renter_requests"),
           where("listerUid", "==", user.uid),
@@ -25,7 +27,7 @@ const RenterReq = () => {
           ref: doc.ref, // optional, if you need to update/delete later
         }));
 
-        console.log("Total purchase requests found:", allForms.length);
+        // console.log("Total purchase requests found:", allForms.length);
         setRenterRequests(allForms);
       } catch (error) {
         console.error("Error fetching buyer data:", error);
